@@ -1,14 +1,26 @@
 const Promise = require('bluebird');
 const express = require('express');
+const mongoose = require('mongoose');
+const { exec } = require('child_process');
+
 const router = express.Router();
 
 
 function checkDatabase() {
-  return Promise.resolve();
+  const Image = mongoose.model('Image')
+  return Image.count();
 }
 
 function checkDisk() {
-  return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    exec('ls /', (error, stdout, stderr) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve()
+      }
+    })
+  })
 }
 
 function healthCheck() {
@@ -33,7 +45,6 @@ function healthCheck() {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  console.log('test');
   healthCheck().then((result) => {
     const status = result.isSuccessful === false ? 500 : 200;
     res.status(status).send(result);
