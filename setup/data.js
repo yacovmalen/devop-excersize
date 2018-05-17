@@ -1,7 +1,18 @@
 const mongoose = require('mongoose');
 const fs = require('fs');
+const Promise = require('bluebird');
+const retry = require('bluebird-retry');
 
-mongoose.connect('mongodb://localhost/pandaserve');
+const mongoUrl = "mongodb://panda:pow@db/pandaserve"
+
+var connect = function() {
+  return mongoose.connect(mongoUrl);
+};
+
+retry(connect, { max_tries: 15, interval: 1000 })
+  .then(function(result) {
+    console.log("Successfully connected to DB");
+});
 
 const Image = mongoose.model('Image', { filename: String });
 
@@ -15,5 +26,3 @@ Image.remove({}).then(() => {
     imageModel.save();
   }))
 })
-
-

@@ -28,13 +28,13 @@ function healthCheck() {
   return Promise.reduce(checks, (result, check) => {
     return check().then((checkResult) => {
       result[check.name] = {
-        failed: false,
+        success: true,
         result: checkResult
       }
       return result;
     }, (error) => {
       result[check.name] = {
-        failed: false,
+        success: false,
         result: error.message
       }
       result.isSuccessful = false
@@ -51,7 +51,7 @@ router.get('/', function(req, res, next) {
   }, (err) => {
     res.status(500).send( { isSuccessful: false, error: err.message});
   })
-  
+
 });
 
 module.exports = router;
