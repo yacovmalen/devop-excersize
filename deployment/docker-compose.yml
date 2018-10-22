@@ -1,0 +1,18 @@
+version: '3'
+services:
+  web:
+    build: ../
+    depends_on:
+      - db
+    networks:
+      - default
+    ports:
+      - "3000:3000"
+    volumes:
+      - "/public/images:/opt/app/public/images"
+  db:
+    build: ../db
+    networks:
+      - default
+    expose:
+      - "27017"
